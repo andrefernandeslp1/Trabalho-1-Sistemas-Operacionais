@@ -16,7 +16,7 @@ int main (int argc, char *argv[])
     m2 = atoi(argv[4]);
   }
   else
-    printf("Parametros invalidos");
+    printf("Parametros invalidos\n");
 
   srand(time(NULL));
   double random, random2;
@@ -24,8 +24,8 @@ int main (int argc, char *argv[])
   double matriz1[n1][m1], matriz2[n2][m2];
 
   FILE *arq, *arq2;
-  arq = fopen("matriz_1.txt", "wt");
-  arq2 = fopen("matriz_2.txt", "wt");
+  arq = fopen("matriz_1.txt", "w");
+  arq2 = fopen("matriz_2.txt", "w");
 
   //matriz 1
   tempo = time(NULL);
@@ -39,6 +39,7 @@ int main (int argc, char *argv[])
       random = (double)rand() / random2;
       matriz1[i][j] = random;
       fprintf(arq, "a%d%d %.3f\n", i+1, j+1, random);
+      usleep(100000);
     }
   }
   
@@ -59,6 +60,7 @@ int main (int argc, char *argv[])
       random = (double)rand() / random2;
       matriz1[i][j] = random;
       fprintf(arq2, "b%d%d %.3f\n", i+1, j+1, random);
+      usleep(100000);
     }
   }
   tempo = time(NULL) - tempo;
