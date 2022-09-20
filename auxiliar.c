@@ -16,12 +16,26 @@ int main (int argc, char *argv[])
     m2 = atoi(argv[4]);
   }
   else
-    printf("Parametros invalidos\n");
+    printf("Parametros invalidos. Forneca 4 numeros inteiros na linha de comando.\nOs numeros correspondem a dimensao de duas Matrizes.\n");
+
+  int linhaA = n1, linhaB = n2, colunaA = m1, colunaB = m2;
 
   srand(time(NULL));
-  double random, random2;
 
-  double matriz1[n1][m1], matriz2[n2][m2];
+  double random, random2;
+  //double matriz1[n1][m1], matriz2[n2][m2];
+
+  double **matriz1, **matriz2;
+
+  // aloca um vetor de LIN ponteiros para linhas
+  matriz1 = malloc (linhaA * sizeof (double*)) ;
+  matriz2 = malloc (linhaB * sizeof (double*)) ;
+
+  // aloca cada uma das linhas (vetores de COL inteiros)
+  for (int i=0; i < linhaA; i++)
+    matriz1[i] = malloc (colunaA * sizeof (double)) ;
+  for (int i=0; i < linhaB; i++)
+    matriz2[i] = malloc (colunaB * sizeof (double)) ;
 
   FILE *arq, *arq2;
   arq = fopen("matriz_1.txt", "w");
@@ -38,11 +52,10 @@ int main (int argc, char *argv[])
       random2 = (double)rand();
       random = (double)rand() / random2;
       matriz1[i][j] = random;
-      fprintf(arq, "a%d%d %.3f\n", i+1, j+1, random);
-      usleep(100000);
+      fprintf(arq, "a(%d,%d) %.3f\n", i+1, j+1, random);
+      //usleep(100000);
     }
   }
-  
   tempo = time(NULL) - tempo;
   fprintf(arq, "%d", tempo);
 
@@ -58,15 +71,23 @@ int main (int argc, char *argv[])
     {
       random2 = (double)rand();
       random = (double)rand() / random2;
-      matriz1[i][j] = random;
-      fprintf(arq2, "b%d%d %.3f\n", i+1, j+1, random);
-      usleep(100000);
+      matriz2[i][j] = random;
+      fprintf(arq2, "b(%d,%d) %.3f\n", i+1, j+1, random);
+      //usleep(100000);
     }
   }
   tempo = time(NULL) - tempo;
   fprintf(arq2, "%d", tempo);
   
   fclose(arq2);
+
+  for (int i=0; i < linhaA; i++)
+    free (matriz1[i]) ;
+  free (matriz1) ;
+
+  for (int i=0; i < linhaB; i++)
+    free (matriz2[i]) ;
+  free (matriz2) ;
 
   return 0;
 }
