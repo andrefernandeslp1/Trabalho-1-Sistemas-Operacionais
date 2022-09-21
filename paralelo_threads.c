@@ -4,19 +4,22 @@
 #include <time.h>
 #include <unistd.h>
 
+//comando: ./<programa> <matriz_1> <matriz_2> <numero inteiro>
+
 int main (int argc, char *argv[])
 {
-  int linhaA, linhaB, colunaA, colunaB, linhaC, colunaC, tempo;
+  int linhaA, linhaB, colunaA, colunaB, linhaC, colunaC, cont, N, n=0, tempo, p;
   double aux;
-  char *temp;
+  char *temp, *str, *str2;
 
   FILE *arq, *arq2, *arq3;
   arq = fopen(argv[1], "r");
   arq2 = fopen(argv[2], "r");
-  arq3 = fopen("matriz_3.txt", "w");
-
+  p = atoi(argv[3]);
   fscanf(arq, "%d %d", &linhaA, &colunaA);
   fscanf(arq2, "%d %d", &linhaB, &colunaB);
+
+  N = (linhaA*colunaB)/p;  
 
   double **matrizA, **matrizB, **matrizC ;
 
@@ -24,6 +27,7 @@ int main (int argc, char *argv[])
   matrizA = malloc (linhaA * sizeof (double*)) ;
   matrizB = malloc (linhaB * sizeof (double*)) ;
   matrizC = malloc (linhaA * sizeof (double*)) ;
+  str = malloc (sizeof(char));
 
   // aloca cada uma das linhas
   for (int i=0; i < linhaA; i++)
@@ -40,60 +44,38 @@ int main (int argc, char *argv[])
   for (int i=0; i < linhaB; i++)
     for (int j=0; j < colunaB; j++)
       fscanf(arq2, "%s %lf", temp, &matrizB[i][j]);
-      
-  /*
-  // imprime as matrizes
-  printf("Matriz 1\n");
-  for(int i = 0; i < linhaA; i++) {
-		for(int j = 0; j < colunaA; j++) {      
-			printf("%7.3lf", matrizA[i][j]);
-		}
-    printf("\n");
-  }
-  printf("Matriz 2\n");
-  for(int i = 0; i < linhaB; i++) {
-		for(int j = 0; j < colunaB; j++) {      
-			printf("%7.3lf", matrizB[i][j]);
-		}
-    printf("\n");
-  }
-  */
 
   //multiplicação das matrizes
-  tempo = time(NULL);
+  cont = 0;
   for(int i = 0; i < linhaA; i++) {
     for(int j = 0; j < colunaB; j++) {
-      
+      if(cont == 0)
+      {        
+        sprintf(str, "matrizes_threads/matriz_3.%d.txt", n);
+        arq3 = fopen(str, "w");
+        fprintf(arq3, "%d %d\n", linhaA, colunaB);
+        tempo = time(NULL);
+      }
       for(int k = 0; k < linhaB; k++) {
-        //printf("%d%dx%d%d + ", i,k,k,j);
         aux += matrizA[i][k] * matrizB[k][j];
       }
-      //printf("\n");
-      matrizC[i][j] = aux;
+      if(cont < p-1)
+      {
+        fprintf(arq3, "c(%d,%d) %.3lf\n", i+1, j+1, aux);
+        cont++;
+      }
+      else
+      {
+        fprintf(arq3, "c(%d,%d) %.3lf\n", i+1, j+1, aux);
+        tempo = time(NULL) - tempo;
+        fprintf(arq3, "%d", tempo);
+        fclose(arq3);
+        cont = 0;
+        n++;
+      }
       aux = 0;
     }
 	}
-  tempo = time(NULL) - tempo;
-
-  /*
-  //imprime matriz 3
-	printf("Matriz 3\n");
-	for(int i = 0; i < linhaA; i++) {
-		for(int j = 0; j < colunaB; j++) {
-			printf("%7.3lf", matrizC[i][j]);
-		}
-		printf("\n");
-	}
-  */
-
-  //grava matriz 3 em arquivo
-  fprintf(arq3, "%d %d\n", linhaA, colunaB);
-	for(int i = 0; i < linhaA; i++) {
-		for(int j = 0; j < colunaB; j++) {
-			fprintf(arq3, "c(%d,%d) %.3lf\n", i+1, j+1, matrizC[i][j]);
-		}
-	}
-  fprintf(arq3, "%d", tempo);
   
   fclose(arq);
   fclose(arq2);
