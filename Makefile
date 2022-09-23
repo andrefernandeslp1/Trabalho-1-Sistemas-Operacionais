@@ -9,7 +9,7 @@ mkdir_threads:
 comp:
 	gcc auxiliar.c -o auxiliar
 	gcc sequencial.c -o sequencial
-	gcc paralelo_threads_3.c -o paralelo_threads -pthread
+	gcc paralelo_threads.c -o paralelo_threads -pthread
 	
 run:
 	./auxiliar 10 10 10 10
