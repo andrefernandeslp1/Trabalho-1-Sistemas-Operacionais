@@ -81,6 +81,7 @@ int main (int argc, char *argv[])
   fclose(arq2);
   fclose(arq3);
 
+  free(str);
   // libera a memória das matrizes
   for (int i=0; i < linhaA; i++)
     free (matrizA[i]) ;
