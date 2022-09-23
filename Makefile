@@ -4,7 +4,7 @@ msg:
 	@echo Compilando...
 
 mkdir_threads:
-	mkdir matrizes_threads
+	mkdir -p matrizes_threads
 
 comp:
 	gcc auxiliar.c -o auxiliar
