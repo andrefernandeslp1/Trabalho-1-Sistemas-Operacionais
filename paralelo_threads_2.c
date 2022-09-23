@@ -37,7 +37,9 @@ void * hello_world(void *tid)
   {
     for( dados.i; dados.i < dados.linhaA; ) {
       for( dados.j; dados.j < dados.colunaB; ) {
+
         aux = 0;
+        
         if(cont == 0 && dados.e < dados.elementos) {        
           sprintf(dados.str, "matrizes_threads/matriz_3.%d.txt", dados.n);
           arq3 = fopen(dados.str, "w");
