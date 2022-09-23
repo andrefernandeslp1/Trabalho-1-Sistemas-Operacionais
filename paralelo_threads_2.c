@@ -43,15 +43,16 @@ void * hello_world(void *tid)
           arq3 = fopen(dados.str, "w");
           fprintf(arq3, "%d %d\n", dados.linhaA, dados.colunaB);
         }
-        for(int k = 0; k < dados.linhaB; k++) {
-          aux += dados.matrizA[dados.i][k] * dados.matrizB[k][dados.j];
-        }
 
-        if(cont < dados.p - 1 && dados.e < dados.elementos) {
+        if(dados.e < dados.elementos){
+          for(int k = 0; k < dados.linhaB; k++) 
+            aux += dados.matrizA[dados.i][k] * dados.matrizB[k][dados.j];
           dados.e++;
+        }
+        
+        if(cont < dados.p - 1 && dados.e < dados.elementos) {
           fprintf(arq3, "c(%d,%d) %.3lf\n", dados.i+1, dados.j+1, aux);
           cont++;
-          printf("i = %d , j = %d\n", dados.i, dados.j);
           if(dados.j < dados.colunaB - 1){
             dados.j++;
             if(dados.j == dados.colunaB - 1)
@@ -59,9 +60,8 @@ void * hello_world(void *tid)
           }
           else dados.j = 0;
         }
+
         if(cont == dados.p - 1) {
-          dados.e++;
-          printf("i = %d , j = %d\n", dados.i, dados.j);
           if(dados.j == dados.colunaB - 1)
             fprintf(arq3, "c(%d,%d) %.3lf\n", dados.i, dados.j+1, aux);
           else 
