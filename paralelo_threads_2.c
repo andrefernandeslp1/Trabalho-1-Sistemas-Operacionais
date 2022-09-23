@@ -35,10 +35,10 @@ void * hello_world(void *tid)
 
   if(dados.e < dados.elementos)
   {
-    for( dados.i; dados.i < dados.linhaA; dados.i++) {
+    for( dados.i; dados.i < dados.linhaA; ) {
       for( dados.j; dados.j < dados.colunaB; ) {
         aux = 0;
-        if(cont == 0) {        
+        if(cont == 0 && dados.e < dados.elementos) {        
           sprintf(dados.str, "matrizes_threads/matriz_3.%d.txt", dados.n);
           arq3 = fopen(dados.str, "w");
           fprintf(arq3, "%d %d\n", dados.linhaA, dados.colunaB);
@@ -47,7 +47,8 @@ void * hello_world(void *tid)
           aux += dados.matrizA[dados.i][k] * dados.matrizB[k][dados.j];
         }
 
-        if(cont < dados.p - 1) {
+        if(cont < dados.p - 1 && dados.e < dados.elementos) {
+          dados.e++;
           fprintf(arq3, "c(%d,%d) %.3lf\n", dados.i+1, dados.j+1, aux);
           cont++;
           printf("i = %d , j = %d\n", dados.i, dados.j);
@@ -58,10 +59,13 @@ void * hello_world(void *tid)
           }
           else dados.j = 0;
         }
-        else {
-          
+        if(cont == dados.p - 1) {
+          dados.e++;
           printf("i = %d , j = %d\n", dados.i, dados.j);
-          fprintf(arq3, "c(%d,%d) %.3lf\n", dados.i+1, dados.j+1, aux);
+          if(dados.j == dados.colunaB - 1)
+            fprintf(arq3, "c(%d,%d) %.3lf\n", dados.i, dados.j+1, aux);
+          else 
+            fprintf(arq3, "c(%d,%d) %.3lf\n", dados.i+1, dados.j+1, aux);
           tempo = time(NULL) - tempo;
           fprintf(arq3, "%d", tempo);
           fclose(arq3);
@@ -71,12 +75,12 @@ void * hello_world(void *tid)
               dados.i++;
           }
           else dados.j = 0;
-
           pthread_exit(NULL);
         }
       }        
     }
   }
+  fclose(arq3);
   pthread_exit(NULL);
 }
 
@@ -95,6 +99,7 @@ int main (int argc, char *argv[])
   fscanf(arq, "%d %d", &linhaA, &colunaA);
   fscanf(arq2, "%d %d", &linhaB, &colunaB);
 
+  dados.e = 0;
   dados.elementos = (linhaA*colunaB);
   N = (linhaA*colunaB)/p;  
   thread = malloc (N * sizeof(pthread_t));
