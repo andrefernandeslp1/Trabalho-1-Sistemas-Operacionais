@@ -13,6 +13,6 @@ comp:
 	gcc paralelo_threads.c -o paralelo_threads -pthread
 
 exec: 
-	./auxiliar 100 100 100 100
+	./auxiliar 5 5 5 5
 	./sequencial matriz_1.txt matriz_2.txt
-	./paralelo_threads matriz_1.txt matriz_2.txt 5
+	./paralelo_threads matriz_1.txt matriz_2.txt 2

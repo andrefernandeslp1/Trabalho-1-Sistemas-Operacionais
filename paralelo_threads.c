@@ -62,7 +62,7 @@ void * hello_world(void *tid)
           } 
         }
 
-        if(cont == dados.p ) {
+        if(cont == dados.p || dados.e == dados.elementos ) {
           tempo = time(NULL) - tempo;
           fprintf(arq3, "%d", tempo);
           fclose(arq3);
@@ -92,8 +92,7 @@ int main (int argc, char *argv[])
 
   dados.e = 0;
   dados.elementos = (linhaA*colunaB);
-  N = (linhaA*colunaB)/p;  
-  thread = malloc (N * sizeof(pthread_t));
+  
 
   //double **matrizA, **matrizB;
 
@@ -130,7 +129,12 @@ int main (int argc, char *argv[])
   dados.j = 0 ;  
 
   //thread //multiplicação das matrizes
-  
+  N = (linhaA*colunaB)/p;  
+  if( (linhaA*colunaB) % 2 != 0 ) 
+    N++;
+  thread = malloc (N * sizeof(pthread_t));
+  dados.N = N;
+  printf("N = %d , linhaA = %d , linhaB = %d , p = %d\n", N, linhaA, colunaB, p);
   
   for( int i=0 ; i < N; i++) {
 
@@ -156,6 +160,14 @@ int main (int argc, char *argv[])
   fclose(arq2);
   //fclose(arq3);
 
+  //liberar memória
+  temp = NULL;
+  thread = NULL;
+  dados.str = NULL;
+  free(temp);
+  free(thread);
+  free(dados.str);
+
   // libera a memória das matrizes
   for (int i=0; i < linhaA; i++)
     free (dados.matrizA[i]) ;
@@ -167,5 +179,7 @@ int main (int argc, char *argv[])
 
   free(temp);
   
- return 0;
+  printf("N = %d\n", N);
+
+  return 0;
 }
