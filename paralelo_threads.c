@@ -18,7 +18,7 @@ pthread_t *thread;
 int status;
 void * thread_return;
 
-void * hello_world(void *tid)
+void * funcao_thread(void *tid)
 {
   /*
   if ((int)(size_t)tid > 0){
@@ -139,7 +139,7 @@ int main (int argc, char *argv[])
   for( int i=0 ; i < N; i++) {
 
     //printf ( " Processo principal criando thread #%d \n " , i ) ;
-    status = pthread_create (&thread[i], NULL ,hello_world, (void*)(size_t)i) ;
+    status = pthread_create (&thread[i], NULL ,funcao_thread, (void*)(size_t)i) ;
     if(status != 0)
     {
       printf("Erro na criacao da thread. Codigo de Erro:%d\n", status);
