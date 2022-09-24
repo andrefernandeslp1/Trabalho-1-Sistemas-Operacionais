@@ -100,16 +100,27 @@ int main (int argc, char *argv[])
   fclose(arq3);
 
   // libera a memória das matrizes
-  for (int i=0; i < linhaA; i++)
+  for (int i=0; i < linhaA; i++){
+    matrizA[i] = NULL;
     free (matrizA[i]) ;
+  }
+  matrizA = NULL;
   free (matrizA) ;
+  
 
-  for (int i=0; i < linhaB; i++)
+  for (int i=0; i < linhaB; i++){
+    matrizB[i] = NULL;
     free (matrizB[i]) ;
+  }
+  matrizB = NULL;
   free (matrizB) ;
+  
 
-  for (int i=0; i < linhaA; i++)
+  for (int i=0; i < linhaA; i++){
+    matrizC[i] = NULL;
     free (matrizC[i]) ;
+  }
+  matrizC = NULL;
   free (matrizC) ;
   
  return 0;
