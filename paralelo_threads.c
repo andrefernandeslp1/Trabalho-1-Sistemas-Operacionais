@@ -20,13 +20,14 @@ void * thread_return;
 
 void * hello_world(void *tid)
 {
-  //dados = data;
+  /*
   if ((int)(size_t)tid > 0){
     pthread_join (thread[(size_t)tid - 1], &thread_return) ; //espera a thread especificada terminar
     printf ("Esta é a Thread %d. A Thread %d terminou.\n", (int)(size_t)tid, (int)(size_t)tid - 1);
   }
   else
     printf ("Esta é a PRIMEIRA Thread.\n"); 
+  */
 
   int tempo = time(NULL);
   int cont=0;
@@ -48,7 +49,7 @@ void * hello_world(void *tid)
         
         for(int k = 0; k < dados.linhaB; k++) 
           aux += dados.matrizA[dados.i][k] * dados.matrizB[k][dados.j];
-              
+
         if(cont < dados.p ) {
           fprintf(arq3, "c(%d,%d) %.3lf\n", dados.i+1, dados.j+1, aux);
           dados.e++;
@@ -93,7 +94,6 @@ int main (int argc, char *argv[])
   dados.e = 0;
   dados.elementos = (linhaA*colunaB);
   
-
   //double **matrizA, **matrizB;
 
   // aloca um vetor de LIN ponteiros para linhas
@@ -129,16 +129,16 @@ int main (int argc, char *argv[])
   dados.j = 0 ;  
 
   //thread //multiplicação das matrizes
+
   N = (linhaA*colunaB)/p;  
-  if( (linhaA*colunaB) % 2 != 0 ) 
+  if( (linhaA*colunaB) % p != 0 ) 
     N++;
+    
   thread = malloc (N * sizeof(pthread_t));
-  dados.N = N;
-  printf("N = %d , linhaA = %d , linhaB = %d , p = %d\n", N, linhaA, colunaB, p);
   
   for( int i=0 ; i < N; i++) {
 
-    printf ( " Processo principal criando thread #%d \n " , i ) ;
+    //printf ( " Processo principal criando thread #%d \n " , i ) ;
     status = pthread_create (&thread[i], NULL ,hello_world, (void*)(size_t)i) ;
     if(status != 0)
     {
@@ -146,15 +146,13 @@ int main (int argc, char *argv[])
       return 1;
     }
     dados.n++;
-    printf ( "Esperando Thread %d finalizar .... \n" , i ) ;
+    //printf ( "Esperando Thread %d finalizar .... \n" , i ) ;
     pthread_join ( thread [ i ] , &thread_return ) ;
-    printf ( "Thread %d finalizada \n" , i ) ;
-    
-    //printf("i = %d , j = %d\n", dados.i, dados.j);
+    //printf ( "Thread %d finalizada \n" , i ) ;
     
 	}
 
-  printf ( "processo vai finalizar \n" ) ;
+  //printf ( "processo vai finalizar \n" ) ;
   
   fclose(arq);
   fclose(arq2);
@@ -169,17 +167,19 @@ int main (int argc, char *argv[])
   free(dados.str);
 
   // libera a memória das matrizes
-  for (int i=0; i < linhaA; i++)
+  for (int i=0; i < linhaA; i++){
+    dados.matrizA[i] = NULL;
     free (dados.matrizA[i]) ;
+  }
+  dados.matrizA = NULL;
   free (dados.matrizA) ;
 
-  for (int i=0; i < linhaB; i++)
+  for (int i=0; i < linhaB; i++){
+    dados.matrizB[i] = NULL;
     free (dados.matrizB[i]) ;
+  }
+  dados.matrizB = NULL;
   free (dados.matrizB) ;
-
-  free(temp);
-  
-  printf("N = %d\n", N);
 
   return 0;
 }
