@@ -71,6 +71,8 @@ int main (int argc, char *argv[])
       //printf("\n");
       matrizC[i][j] = aux;
       aux = 0;
+      //printf("%ld\n", time(NULL));
+      //sleep(1);
     }
 	}
   tempo = time(NULL) - tempo;

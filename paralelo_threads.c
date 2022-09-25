@@ -29,7 +29,7 @@ void * funcao_thread(void *tid)
     printf ("Esta é a PRIMEIRA Thread.\n"); 
   */
 
-  int tempo = time(NULL);
+  //int tempo = time(NULL);
   int cont=0;
   double aux;
   FILE *arq3;
@@ -40,9 +40,11 @@ void * funcao_thread(void *tid)
       if(dados.e < dados.elementos){
 
         aux = 0;
-        
+        //printf("%d\n", dados.e);
+        //usleep(200000);
+
         if(cont == 0) {        
-          sprintf(dados.str, "matrizes_threads/matriz_3.%d.txt", dados.n);
+          sprintf(dados.str, "matrizes_threads/matriz_C%d.txt", dados.n);
           arq3 = fopen(dados.str, "w");
           fprintf(arq3, "%d %d\n", dados.linhaA, dados.colunaB);
         }
@@ -64,8 +66,8 @@ void * funcao_thread(void *tid)
         }
 
         if(cont == dados.p || dados.e == dados.elementos ) {
-          tempo = time(NULL) - tempo;
-          fprintf(arq3, "%d", tempo);
+          //tempo = time(NULL) - tempo;
+          //fprintf(arq3, "%d", tempo);
           fclose(arq3);
           pthread_exit(NULL);
         }
@@ -135,21 +137,30 @@ int main (int argc, char *argv[])
     N++;
     
   thread = malloc (N * sizeof(pthread_t));
+
+  FILE *arq4;
   
   for( int i=0 ; i < N; i++) {
-
+    tempo = time(NULL);
     //printf ( " Processo principal criando thread #%d \n " , i ) ;
     status = pthread_create (&thread[i], NULL ,funcao_thread, (void*)(size_t)i) ;
+
     if(status != 0)
     {
       printf("Erro na criacao da thread. Codigo de Erro:%d\n", status);
       return 1;
     }
+
     dados.n++;
     //printf ( "Esperando Thread %d finalizar .... \n" , i ) ;
     pthread_join ( thread [ i ] , &thread_return ) ;
     //printf ( "Thread %d finalizada \n" , i ) ;
-    
+
+    tempo = time(NULL) - tempo;
+    //printf("dados.str = %s\n", dados.str);
+    arq4 = fopen(dados.str, "a");
+    fprintf(arq4, "%d", tempo);
+    fclose(arq4);
 	}
 
   //printf ( "processo vai finalizar \n" ) ;
