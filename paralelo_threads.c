@@ -41,7 +41,7 @@ void * funcao_thread(void *tid)
 
         aux = 0;
         //printf("%d\n", dados.e);
-        //usleep(200000);
+        //sleep(1);
 
         if(cont == 0) {        
           sprintf(dados.str, "matrizes_threads/matriz_C%d.txt", dados.n);
