@@ -142,6 +142,7 @@ int main (int argc, char *argv[])
   
   for( int i=0 ; i < N; i++) {
     tempo = time(NULL);
+
     //printf ( " Processo principal criando thread #%d \n " , i ) ;
     status = pthread_create (&thread[i], NULL ,funcao_thread, (void*)(size_t)i) ;
 
@@ -152,6 +153,7 @@ int main (int argc, char *argv[])
     }
 
     dados.n++;
+
     //printf ( "Esperando Thread %d finalizar .... \n" , i ) ;
     pthread_join ( thread [ i ] , &thread_return ) ;
     //printf ( "Thread %d finalizada \n" , i ) ;

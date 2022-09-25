@@ -1,7 +1,7 @@
 app: main clean comp exec
 
 main: 
-	@echo Criando diretorios, se nao existentes...
+	@echo Criando patas, se nao existentes...
 	mkdir -p matrizes_threads
 
 clean:
