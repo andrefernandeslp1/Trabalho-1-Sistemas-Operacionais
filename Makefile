@@ -19,7 +19,7 @@ comp:
 
 exec: 
 	@echo Executando...
-	./auxiliar 5 5 5 5
+	./auxiliar 1000 5000 5000 1000
 	./sequencial matriz_1.txt matriz_2.txt
-	./paralelo_threads matriz_1.txt matriz_2.txt 2
-	./paralelo_processos matriz_1.txt matriz_2.txt 2
+	./paralelo_threads matriz_1.txt matriz_2.txt 100000
+	./paralelo_processos matriz_1.txt matriz_2.txt 100000

@@ -121,7 +121,7 @@ int main (int argc, char *argv[])
   dados->j = 0 ;  
   dados->e = 0;
   dados->elementos = (linhaA*colunaB);
-  dados->ii = 0;
+  //dados->ii = 0;
 
   N = (linhaA*colunaB)/p;  
   if( (linhaA*colunaB) % p != 0 ) 
@@ -144,6 +144,7 @@ int main (int argc, char *argv[])
       shmdt(dados);
       exit(0);
     }
+    dados->n++;
     wait(NULL);
 
     dados->tempo = time(NULL) - dados->tempo;
@@ -153,7 +154,7 @@ int main (int argc, char *argv[])
     fprintf(arq4, "%d", dados->tempo);
     fclose(arq4);
 
-    dados->n++;
+    
 	}
 
   //printf ( "processo vai finalizar \n" ) ;
