@@ -20,9 +20,8 @@ typedef struct{
 
 Dados * dados;
 
-void funcao(Dados *dados)
+int funcao(Dados *dados)
 {
-  //printf("dados->n = %d\n", dados->n);
   int cont=0;
   double aux;
   FILE *arq3;
@@ -36,7 +35,7 @@ void funcao(Dados *dados)
 
         if(cont == 0) {        
           sprintf(dados->str, "matrizes_processos/matriz_C%d.txt", dados->n);
-          printf("dados->str = %s\n", dados->str);
+          //printf("dados->str = %s\n", dados->str);
           arq3 = fopen(dados->str, "w");
           fprintf(arq3, "%d %d\n", dados->linhaA, dados->colunaB);
         }
@@ -59,16 +58,12 @@ void funcao(Dados *dados)
 
         if(cont == dados->p || dados->e == dados->elementos ) {
           fclose(arq3);
-          //shmdt(dados);
-          //exit(0);
           return 0;
         }
       }
     }
   }
   fclose(arq3);
-  //shmdt(dados);
-  //exit(0);;
   return 0;
 }
 
@@ -134,7 +129,7 @@ int main (int argc, char *argv[])
 
   dados->N = N;
 
-  for( dados->ii ; dados->ii < dados->N; dados->ii++) {
+  for( int i=0 ; i < dados->N; i++) {
     dados->tempo = time(NULL);
     
     filho = fork();
@@ -142,40 +137,23 @@ int main (int argc, char *argv[])
     if(filho == 0)
     {
       dados = shmat (valor, NULL, 0);
-      printf("Filho %d pid %d: \n", dados->ii, getpid());
-      printf("Filho %d pid_pai %d: \n", dados->ii, getppid());
+      //printf("Filho %d pid %d: \n", i, getpid());
+      //printf("Filho %d pid_pai %d: \n", i, getppid());
       funcao(dados);
       
-      //printf("tempo = %d", tempo);
       shmdt(dados);
       exit(0);
     }
     wait(NULL);
 
     dados->tempo = time(NULL) - dados->tempo;
-    printf("time = %d\n", dados->tempo);
+    //printf("time = %d\n", dados->tempo);
     sprintf(dados->str, "matrizes_processos/matriz_C%d.txt", dados->n);
     arq4 = fopen(dados->str, "a");
     fprintf(arq4, "%d", dados->tempo);
     fclose(arq4);
 
     dados->n++;
-    printf("dados->n = %d\n", dados->n);
-    
-    
- 
-    //printf("dados->str = %s\n", dados->str);
-    
-    
-
-    /*
-    if(filho > 0 )
-    {
-      if (dados->ii < dados->N)
-        filho = fork();
-    }
-    wait(NULL);
-    */
 	}
 
   //printf ( "processo vai finalizar \n" ) ;
@@ -206,7 +184,7 @@ int main (int argc, char *argv[])
   free (dados->matrizB) ;
 
   shmctl( valor , IPC_RMID , NULL );
-  exit(0);
+  //exit(0);
 
   return 0;
 }
