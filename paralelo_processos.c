@@ -13,7 +13,7 @@
 
 typedef struct{
   int i, j, linhaA, linhaB, colunaA, colunaB, e, elementos, N, n, p;
-  int tempo;
+  int tempo, ii;
   double **matrizA, **matrizB;
   char *str;
 } Dados;
@@ -36,7 +36,7 @@ void funcao(Dados *dados)
 
         if(cont == 0) {        
           sprintf(dados->str, "matrizes_processos/matriz_C%d.txt", dados->n);
-          printf("\ndados->str = %s\n", dados->str);
+          printf("dados->str = %s\n", dados->str);
           arq3 = fopen(dados->str, "w");
           fprintf(arq3, "%d %d\n", dados->linhaA, dados->colunaB);
         }
@@ -59,13 +59,17 @@ void funcao(Dados *dados)
 
         if(cont == dados->p || dados->e == dados->elementos ) {
           fclose(arq3);
-          exit(0);
+          //shmdt(dados);
+          //exit(0);
+          return 0;
         }
       }
     }
   }
   fclose(arq3);
-  exit(0);;
+  //shmdt(dados);
+  //exit(0);;
+  return 0;
 }
 
 int main (int argc, char *argv[])
@@ -122,6 +126,7 @@ int main (int argc, char *argv[])
   dados->j = 0 ;  
   dados->e = 0;
   dados->elementos = (linhaA*colunaB);
+  dados->ii = 0;
 
   N = (linhaA*colunaB)/p;  
   if( (linhaA*colunaB) % p != 0 ) 
@@ -129,48 +134,48 @@ int main (int argc, char *argv[])
 
   dados->N = N;
 
-  for( int i=0 ; i < dados->N; i++) {
+  for( dados->ii ; dados->ii < dados->N; dados->ii++) {
     dados->tempo = time(NULL);
     
     filho = fork();
 
     if(filho == 0)
     {
-      printf("Filho %d pid %d: ", i, getpid());
-      funcao(dados);
       dados = shmat (valor, NULL, 0);
+      printf("Filho %d pid %d: \n", dados->ii, getpid());
+      printf("Filho %d pid_pai %d: \n", dados->ii, getppid());
+      funcao(dados);
       
       //printf("tempo = %d", tempo);
+      shmdt(dados);
       exit(0);
     }
     wait(NULL);
 
+    dados->tempo = time(NULL) - dados->tempo;
+    printf("time = %d\n", dados->tempo);
+    sprintf(dados->str, "matrizes_processos/matriz_C%d.txt", dados->n);
+    arq4 = fopen(dados->str, "a");
+    fprintf(arq4, "%d", dados->tempo);
+    fclose(arq4);
+
     dados->n++;
     printf("dados->n = %d\n", dados->n);
     
-    dados->tempo = time(NULL) - dados->tempo;
-    printf("time = %d\n", dados->tempo);
+    
  
     //printf("dados->str = %s\n", dados->str);
-    /*
-    arq4 = fopen(dados->str, "a");
-    fprintf(arq4, "%d", *tempo);
-    fclose(arq4);
-    */
+    
+    
 
+    /*
     if(filho > 0 )
     {
-      if (i < dados->N)
+      if (dados->ii < dados->N)
         filho = fork();
-      else
-      {
-        //printf("Pai: Resultado = ");
-        dados = shmat ( valor , NULL , 0 ) ;
-        //printf("%d\n", *mem);
-        shmdt(dados);
-      }
     }
     wait(NULL);
+    */
 	}
 
   //printf ( "processo vai finalizar \n" ) ;
@@ -199,6 +204,9 @@ int main (int argc, char *argv[])
   }
   dados->matrizB = NULL;
   free (dados->matrizB) ;
+
+  shmctl( valor , IPC_RMID , NULL );
+  exit(0);
 
   return 0;
 }
