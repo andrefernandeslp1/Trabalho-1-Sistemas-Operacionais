@@ -4,13 +4,13 @@
 #include <time.h>
 #include <unistd.h>
 
-// ./leitura_dados <qtd_de_arquivos>
+// ./leitura_dados <qtd_de_arquivos> <numero da execução>
 
 int main(int argc, char *argv[])
 {
   FILE *arq, *arq2, *arq3, *arq4;
 
-  int N, t1, t2, t3, aux=0, aux2=0;
+  int N, t1, t2, t3, aux=0, aux2=0, tam1, tam2, p;
   char tempo_p[10];
   char tempo_t[10];
   char tempo_s[10];
@@ -54,15 +54,25 @@ int main(int argc, char *argv[])
   }
 
   arq3 = fopen("matriz_3.txt", "r");
+  fscanf(arq3,"%d %d", &tam1, &tam2);
   while(!feof(arq3)){
       fgets(tempo_s,5,arq);
     }
   t3 = atoi(tempo_s);
   fclose(arq3);
 
+  p = (tam1*tam2)/N;
   int execucao = atoi(argv[2]);
 
-  arq4 = fopen("resultados.txt", "a");
+  char str3[50];
+  sprintf(str3, "resultados_%dx%d_p%d.txt", tam1, tam2, p);
+  arq4 = fopen(str3, "a");
+
+  if(execucao == 1){
+    fprintf(arq4, "Matriz: %d x %d, P = %d\n", tam1, tam2, p);
+    fprintf(arq4, "Execucao,Paralelo_Threads,Paralelo_Processos,Sequencial\n");
+    
+  }
   fprintf(arq4, "%d,%d,%d,%d\n", execucao, aux, aux2, t3);
   fclose(arq4);
   //tempo = NULL;
