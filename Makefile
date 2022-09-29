@@ -51,11 +51,11 @@ comp_e2:
 
 exec_e2:
 	@echo Executando...
-	dim=150 ; \
+	dim=2400 ; \
 		./auxiliar $$dim $$dim $$dim $$dim ; \
 		./sequencial matriz_1.txt matriz_2.txt ; \
 		./cria_arquivo_resultados_E2 ; \
-	num2=0 ; \
+	P=0 ; \
 	for i in 32 16 8 4 2 ; do \
 		P=$$(( (dim*dim)/i )) ; \
 		for j in `seq 1 3` ; do \
