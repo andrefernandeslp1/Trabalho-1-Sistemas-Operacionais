@@ -65,14 +65,16 @@ int main(int argc, char *argv[])
   int execucao = atoi(argv[2]);
 
   char str3[50];
-  sprintf(str3, "resultados_%dx%d_p%d.txt", tam1, tam2, p);
+  sprintf(str3, "resultados_E1_%dx%d_p%d.txt", tam1, tam2, p);
   arq4 = fopen(str3, "a");
 
   if(execucao == 1){
+    arq4 = fopen(str3, "w");
     fprintf(arq4, "Matriz: %d x %d, P = %d\n", tam1, tam2, p);
-    fprintf(arq4, "Execucao,Paralelo_Threads,Paralelo_Processos,Sequencial\n");
-    
+    fprintf(arq4, "Execucao,Paralelo_Processos,Paralelo_Threads,Sequencial\n");
   }
+  else 
+    arq4 = fopen(str3, "a");
   fprintf(arq4, "%d,%d,%d,%d\n", execucao, aux, aux2, t3);
   fclose(arq4);
   //tempo = NULL;
