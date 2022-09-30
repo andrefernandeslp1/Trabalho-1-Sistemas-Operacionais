@@ -1,4 +1,4 @@
-#ETAPA 1
+#E1
 e1: main clean comp exec
 
 main: 
@@ -20,19 +20,20 @@ comp:
 	gcc leitura_dados_E1.c -o leitura_dados_E1
 
 exec: 
-	@echo Executando...
-	num=150 ; \
-		./auxiliar $$num $$num $$num $$num ; \
-	num2=0 ; \
-	for i in `seq 1 10` ; do \
-		num2=$$(( (num*num)/8 )) ; \
-		./sequencial matriz_1.txt matriz_2.txt ; \
-		./paralelo_threads matriz_1.txt matriz_2.txt $$num2 ; \
-		./paralelo_processos matriz_1.txt matriz_2.txt $$num2 ; \
-		./leitura_dados_E1 8 $$i ; \
+	@echo Executando E1...
+	for num in 150 300 600 1200 2400 ; do \
+			./auxiliar $$num $$num $$num $$num ; \
+		num2=0 ; \
+		for i in `seq 1 10` ; do \
+			num2=$$(( (num*num)/8 )) ; \
+			./sequencial matriz_1.txt matriz_2.txt ; \
+			./paralelo_threads matriz_1.txt matriz_2.txt $$num2 ; \
+			./paralelo_processos matriz_1.txt matriz_2.txt $$num2 ; \
+			./leitura_dados_E1 8 $$i ; \
+		done ; \
 	done
 
-#ETAPA 2
+#E2
 e2: main_e2 comp_e2 exec_e2
 
 main_e2: 
@@ -50,7 +51,7 @@ comp_e2:
 	gcc leitura_dados_E2.c -o leitura_dados_E2
 
 exec_e2:
-	@echo Executando...
+	@echo Executando E2...
 	dim=2400 ; \
 		./auxiliar $$dim $$dim $$dim $$dim ; \
 		./sequencial matriz_1.txt matriz_2.txt ; \
