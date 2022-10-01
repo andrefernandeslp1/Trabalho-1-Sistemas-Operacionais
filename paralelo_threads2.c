@@ -10,13 +10,35 @@
 struct Dados{
   int i, j, linhaA, linhaB, colunaA, colunaB, e, elementos, N, n, p;
   double **matrizA, **matrizB;
-  char *str;
-  int *tid;
 } dados;
 
 pthread_t *thread;
 int status;
 void * thread_return;
+
+void * incrementar(int *vetor, int i, int tempo)
+{
+  //vetor[2] += 1;  // n na função
+
+  int incremento_x, incremento_y;
+
+  incremento_x = dados.p / dados.colunaB;
+  incremento_y = dados.p % dados.colunaB;
+
+  FILE *arq4;
+  char str_[50];
+  vetor[0] += incremento_x; // i na função
+  vetor[1] += incremento_y; // j na função
+  if(vetor[1] >=dados.colunaB){
+    vetor[0] += 1;
+    vetor[1] = 0;
+  }  
+  tempo = time(NULL) - tempo;
+  sprintf(str_, "matrizes_threads/matriz_C%d.txt", i+1);
+  arq4 = fopen(str_, "a");
+  fprintf(arq4, "%d", tempo);
+  fclose(arq4); 
+}
 
 void * funcao_thread(void * vector)
 {
@@ -29,15 +51,16 @@ void * funcao_thread(void * vector)
     printf ("Esta é a PRIMEIRA Thread.\n"); 
   */
 
-  //int tempo = time(NULL);
+  int tempo = time(NULL);
   int cont=0;
   double aux;
   FILE *arq3;
+  char str[50];
 
   int * v = (int*)vector;
-  int i = v[0], j=v[1];
+  int i = v[0], j=v[1], n=v[2];
 
-  printf("ii = %d , jj = %d\n", i, j);
+  printf("i = %d - j = %d - n = %d\n", i, j, n);
 
   for( i; i < dados.linhaA; ) {
     for( j; j < dados.colunaB; ) {
@@ -48,9 +71,11 @@ void * funcao_thread(void * vector)
         //printf("%d\n", dados.e);
         //sleep(1);
 
+        printf("TESTE\n");
+
         if(cont == 0) {        
-          sprintf(dados.str, "matrizes_threads/matriz_C%d.txt", dados.n);
-          arq3 = fopen(dados.str, "w");
+          sprintf(str, "matrizes_threads/matriz_C%d.txt", n);
+          arq3 = fopen(str, "w");
           fprintf(arq3, "%d %d\n", dados.linhaA, dados.colunaB);
         }
         
@@ -85,6 +110,8 @@ void * funcao_thread(void * vector)
 
 int main (int argc, char *argv[])
 {
+  
+
   //data *dados;
   int linhaA, linhaB, colunaA, colunaB, linhaC, colunaC, cont, elementos, N, n=0, tempo, p;
   //double aux;
@@ -106,8 +133,6 @@ int main (int argc, char *argv[])
   // aloca um vetor de LIN ponteiros para linhas
   dados.matrizA = malloc (linhaA * sizeof (double*)) ;
   dados.matrizB = malloc (linhaB * sizeof (double*)) ;
-
-  dados.str = malloc (sizeof(char));
 
   // aloca cada uma das linhas
   for (int i=0; i < linhaA; i++){
@@ -143,53 +168,61 @@ int main (int argc, char *argv[])
     
   thread = malloc (N * sizeof(pthread_t));
 
-  FILE *arq4;
+  //FILE *arq4;
+  //char str_[50];
   
-  int vetor[2] = {0,0};
-  int *ii, *jj, incremento_x, incremento_y;
-  ii = &vetor[0];
-  jj = &vetor[1];
+  int vetor[3] = {0,0,0};
+  int incremento_x, incremento_y;
 
   incremento_x = p / colunaB;
   incremento_y = p % colunaB;
   
   //if(p % colunaB != 0)
     //incremento_x++;
+  
+  tempo = time(NULL);
 
   for( int i=0 ; i < N; i++) {
-    tempo = time(NULL);
+    
+
+    //incrementar(vetor, i, tempo);
 
     //printf ( " Processo principal criando thread #%d \n " , i ) ;
     status = pthread_create (&thread[i], NULL ,funcao_thread, (void*)(size_t)vetor) ;
+    //////////
 
-    if(status != 0)
+    //vetor[2] += 1;  // n na função
+    
+    
+    //*******
+    //pthread_join ( thread [ i ] , &thread_return ) ;
+    //printf("vetor[0] = %d - vetor[1] = %d - vetor[2] = %d\n", vetor[0], vetor[1], vetor[2]);  
+    /*
+    if(i < N)
     {
-      printf("Erro na criacao da thread. Codigo de Erro:%d\n", status);
-      return 1;
+      vetor[0] += incremento_x; // i na função
+      vetor[1] += incremento_y; // j na função
+      if(vetor[1] >=colunaB){
+        vetor[0] += 1;
+        vetor[1] = 0;
+      }  
+      tempo = time(NULL) - tempo;
+      sprintf(str_, "matrizes_threads/matriz_C%d.txt", i+1);
+      arq4 = fopen(str_, "a");
+      fprintf(arq4, "%d", tempo);
+      fclose(arq4);
     }
-
-    dados.n++;
+    */
     
-    //printf ( "Esperando Thread %d finalizar .... \n" , i ) ;
-    pthread_join ( thread [ i ] , &thread_return ) ;
-    //printf ( "Thread %d finalizada \n" , i ) ;
-    
-    vetor[0] += incremento_x;
-    vetor[1] += incremento_y;
-    if(vetor[1] >=colunaB){
-      vetor[0] += 1;
-      vetor[1] = 0;
-    }
+  }
 
-    printf("vetor[0] = %d - ", vetor[0]);
-    printf("vetor[1] = %d\n", vetor[1]);
+  for(int i=0 ; i < N ; i++){
+    //***************
+    pthread_join ( thread[i] , &thread_return ) ;
+    //******************
+  }
 
-    tempo = time(NULL) - tempo;
-    //printf("dados.str = %s\n", dados.str);
-    arq4 = fopen(dados.str, "a");
-    fprintf(arq4, "%d", tempo);
-    fclose(arq4);
-	}
+  printf("Tempo = %ld", time(NULL) - tempo);
 
   //printf ( "processo vai finalizar \n" ) ;
   
@@ -200,10 +233,8 @@ int main (int argc, char *argv[])
   //liberar memória
   temp = NULL;
   thread = NULL;
-  dados.str = NULL;
   free(temp);
   free(thread);
-  free(dados.str);
 
   // libera a memória das matrizes
   for (int i=0; i < linhaA; i++){
