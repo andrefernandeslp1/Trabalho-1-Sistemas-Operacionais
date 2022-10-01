@@ -24,11 +24,16 @@ exec:
 	for num in 150 300 600 1200 2400 ; do \
 			./auxiliar $$num $$num $$num $$num ; \
 		num2=0 ; \
+		echo P = \[ n1xm2 / 8 \] ; \
 		for i in `seq 1 10` ; do \
 			num2=$$(( (num*num)/8 )) ; \
+			echo SEQUENCIAL $$num x $$num Execucao $$i ; \
 			./sequencial matriz_1.txt matriz_2.txt ; \
+			echo THREADS $$num x $$num Execucao $$i ;  \
 			./paralelo_threads matriz_1.txt matriz_2.txt $$num2 ; \
+			echo PROCESSOS $$num x $$num Execucao $$i ; \
 			./paralelo_processos matriz_1.txt matriz_2.txt $$num2 ; \
+			echo LEITURA $$num x $$num Execucao $$i ; \
 			./leitura_dados_E1 8 $$i ; \
 		done ; \
 	done
