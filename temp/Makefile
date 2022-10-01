@@ -21,12 +21,12 @@ comp:
 
 exec: 
 	@echo Executando E1...
-	for num in 300 300 ; do \
-			./auxiliar 100 $$num $$num 150 ; \
+	for num in 150 300 600 1200 2400 ; do \
+			./auxiliar $$num $$num $$num $$num ; \
 		num2=0 ; \
 		echo P = \[ n1xm2 / 8 \] ; \
 		for i in `seq 1 10` ; do \
-			num2=$$(( (100*150)/8 )) ; \
+			num2=$$(( (num*num)/8 )) ; \
 			echo SEQUENCIAL $$num x $$num Execucao $$i ; \
 			./sequencial matriz_1.txt matriz_2.txt ; \
 			echo THREADS $$num x $$num Execucao $$i ;  \
