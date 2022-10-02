@@ -160,6 +160,8 @@ int main (int argc, char *argv[])
 
   FILE *arq4;
   
+  int TEMPO = time(NULL);
+
   for( int i=0 ; i < N; i++) {
 
     //printf ( " Processo principal criando thread #%d \n " , i ) ;
@@ -182,6 +184,9 @@ int main (int argc, char *argv[])
 
   //printf ( "processo vai finalizar \n" ) ;
   
+  TEMPO = time(NULL) - TEMPO;
+  printf("TEMPO = %d\n", TEMPO);
+
   fclose(arq);
   fclose(arq2);
   //fclose(arq3);

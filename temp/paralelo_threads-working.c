@@ -5,15 +5,13 @@
 #include <unistd.h>
 #include <pthread.h>
 
-//comando: ./<programa> <matriz_1> <matriz_2> <valor_de_P>
+//comando: ./<programa> <matriz_1> <matriz_2> <numero inteiro>
 
 struct Dados{
   int i, j, linhaA, linhaB, colunaA, colunaB, e, elementos, N, n, p;
   double **matrizA, **matrizB;
   char *str;
   int *tid;
-  double incremento_x;
-  int incremento_y, resto;
 } dados;
 
 pthread_t *thread;
@@ -31,42 +29,13 @@ void * funcao_thread(void *tid)
     printf ("Esta é a PRIMEIRA Thread.\n"); 
   */
 
-  int tempo = time(NULL);
+  //int tempo = time(NULL);
   int cont=0;
   double aux;
   FILE *arq3;
-  int n = (int)(size_t)tid;
-  char str_[50];
 
-  int x = dados.colunaB/dados.incremento_y;
-
-  int i = n * dados.incremento_x;
-  printf("n*incrmento_x = %d\n", i);
-  int j = n * dados.incremento_y;
-  //int j;
-
-  if( n > 0 ){
-    if( n % 2 == 0){
-      j = 0;
-      //i++;
-    }
-    else{
-      j = dados.incremento_y;
-      //i++;
-    }
-  }
-  
-    
-  
-
-  /*
-  if(j > dados.colunaB - 1){
-    i += 1;
-    j = j - dados.colunaB;
-  }
-  */
-  for( i; i < dados.linhaA; ) {
-    for( j; j < dados.colunaB; ) {
+  for( dados.i; dados.i < dados.linhaA; ) {
+    for( dados.j; dados.j < dados.colunaB; ) {
 
       if(dados.e < dados.elementos){
 
@@ -75,41 +44,37 @@ void * funcao_thread(void *tid)
         //sleep(1);
 
         if(cont == 0) {        
-          sprintf(str_, "matrizes_threads/matriz_C%d.txt", n+1);
-          arq3 = fopen(str_, "w");
+          sprintf(dados.str, "matrizes_threads/matriz_C%d.txt", dados.n);
+          arq3 = fopen(dados.str, "w");
           fprintf(arq3, "%d %d\n", dados.linhaA, dados.colunaB);
         }
         
         for(int k = 0; k < dados.linhaB; k++) 
-          aux += dados.matrizA[i][k] * dados.matrizB[k][j];
+          aux += dados.matrizA[dados.i][k] * dados.matrizB[k][dados.j];
 
         if(cont < dados.p ) {
-          fprintf(arq3, "c(%d,%d) %.3lf\n", i+1, j+1, aux);
+          fprintf(arq3, "c(%d,%d) %.3lf\n", dados.i+1, dados.j+1, aux);
           dados.e++;
           cont++;
-          if(j < dados.colunaB - 1) {
-            j++;
+          if(dados.j < dados.colunaB - 1) {
+            dados.j++;
           }
           else {
-            j = 0;
-            i++;
+            dados.j = 0;
+            dados.i++;
           } 
         }
 
         if(cont == dados.p || dados.e == dados.elementos ) {
-          tempo = time(NULL) - tempo;
-          fprintf(arq3, "%d", tempo);
+          //tempo = time(NULL) - tempo;
+          //fprintf(arq3, "%d", tempo);
           fclose(arq3);
-          //dados.n++;          
           pthread_exit(NULL);
         }
       }
     }
   }
-  tempo = time(NULL) - tempo;
-  fprintf(arq3, "%d", tempo);
   fclose(arq3);
-  //dados.n++;  
   pthread_exit(NULL);
 }
 
@@ -165,28 +130,18 @@ int main (int argc, char *argv[])
   dados.i = 0;
   dados.j = 0 ;  
 
-  dados.incremento_x = (double)p / linhaA;
-  printf("p / linhaA = %lf\n", dados.incremento_x);
-  //if(p % linhaA != 0)
-  //  dados.incremento_x++;
-  dados.incremento_y = p % colunaB;
-
   //thread //multiplicação das matrizes
 
-  N = (linhaA*colunaB) / p;  
-  if( (linhaA*colunaB) % p != 0 ){
+  N = (linhaA*colunaB)/p;  
+  if( (linhaA*colunaB) % p != 0 ) 
     N++;
-    dados.resto = (linhaA*colunaB) % p;
-  }
-  dados.N = N;
     
   thread = malloc (N * sizeof(pthread_t));
 
   FILE *arq4;
   
-  int TEMPO = time(NULL);
-
   for( int i=0 ; i < N; i++) {
+    tempo = time(NULL);
 
     //printf ( " Processo principal criando thread #%d \n " , i ) ;
     status = pthread_create (&thread[i], NULL ,funcao_thread, (void*)(size_t)i) ;
@@ -197,20 +152,21 @@ int main (int argc, char *argv[])
       return 1;
     }
 
-	}
+    dados.n++;
 
-  for(int i=0 ; i < N ; i++)
-  {
     //printf ( "Esperando Thread %d finalizar .... \n" , i ) ;
     pthread_join ( thread [ i ] , &thread_return ) ;
     //printf ( "Thread %d finalizada \n" , i ) ;
-  }
+
+    tempo = time(NULL) - tempo;
+    //printf("dados.str = %s\n", dados.str);
+    arq4 = fopen(dados.str, "a");
+    fprintf(arq4, "%d", tempo);
+    fclose(arq4);
+	}
 
   //printf ( "processo vai finalizar \n" ) ;
   
-  TEMPO = time(NULL) - TEMPO;
-  printf("TEMPO = %d\n", TEMPO);
-
   fclose(arq);
   fclose(arq2);
   //fclose(arq3);
