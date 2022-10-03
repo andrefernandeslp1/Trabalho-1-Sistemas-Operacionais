@@ -11,9 +11,9 @@ int main(int argc, char *argv[])
   FILE *arq, *arq2, *arq3, *arq4;
 
   int N, t1, t2, t3, aux=0, aux2=0, tam1, tam2, p;
-  char tempo_p[10];
-  char tempo_t[10];
-  char tempo_s[10];
+  char tempo_p[5];
+  char tempo_t[5];
+  char tempo_s[5];
   char str[50], str2[50];
   //str = malloc(sizeof(char));
   //str2 = malloc(sizeof(char));
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     arq = fopen(str,"r");
 
     while(!feof(arq)){
-      fgets(tempo_p,10,arq);
+      fgets(tempo_p,5,arq);
     }
     t1 = atoi(tempo_p);
     if(t1 > aux) aux = t1;
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     arq2 = fopen(str2,"r");
     
     while(!feof(arq2)){
-      fgets(tempo_t,10,arq);
+      fgets(tempo_t,5,arq);
     }
     t2 = atoi(tempo_t);
     if(t2 > aux2) aux2 = t2;
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
   arq3 = fopen("matriz_3.txt", "r");
   fscanf(arq3,"%d %d", &tam1, &tam2);
   while(!feof(arq3)){
-      fgets(tempo_s,10,arq);
+      fgets(tempo_s,5,arq);
     }
   t3 = atoi(tempo_s);
   fclose(arq3);

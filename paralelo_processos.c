@@ -50,7 +50,7 @@ int funcao(int n)
     for( j ; j < colunaB; j++) {
 
       if(cont == 0) {       
-        sprintf(str_, "matrizes_processos/matriz_C%d.txt\n", n+1);
+        sprintf(str_, "matrizes_processos/matriz_C%d.txt", n+1);
         arq3 = fopen(str_, "w");
         fprintf(arq3, "%d %d\n", linhaA, colunaB);
       }
@@ -72,7 +72,8 @@ int funcao(int n)
         tempo = time(NULL) - tempo;
         fprintf(arq3, "%d", tempo);
         fclose(arq3);         
-        return 0;
+        //return 0;
+        exit(0);
       }
     }
     j = 0;
@@ -80,7 +81,8 @@ int funcao(int n)
   tempo = time(NULL) - tempo;
   fprintf(arq3, "%d", tempo);
   fclose(arq3);
-  return 0;
+  //return 0;
+  exit(0);
 }
 
 int main (int argc, char *argv[])
@@ -131,9 +133,9 @@ int main (int argc, char *argv[])
     {
       printf("Filho = %d\n", getpid());
       funcao(i);
-      exit(0);
+      //exit(0);
     }
-    wait(NULL);
+    //wait(NULL);
 
     if(filho > 0){
       printf("Pai = %d\n", getpid());
