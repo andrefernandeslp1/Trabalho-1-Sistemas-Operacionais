@@ -24,7 +24,7 @@ exec:
 	for num in 150 300 600 1200 2400 ; do \
 			./auxiliar $$num $$num $$num $$num ; \
 		echo P = \[ n1xm2 / 8 \] ; \
-		for i in `seq 1 3` ; do \
+		for i in `seq 1 5` ; do \
 			num2=$$(( (num*num)/8 )) ; \
 			echo SEQUENCIAL $$num x $$num Execucao $$i ; \
 			./sequencial matriz_1.txt matriz_2.txt ; \
@@ -56,14 +56,14 @@ comp_e2:
 
 exec_e2:
 	@echo Executando E2...
-	dim=1200 ; \
+	dim=2400 ; \
 		./auxiliar $$dim $$dim $$dim $$dim ; \
 		./sequencial matriz_1.txt matriz_2.txt ; \
 		./cria_arquivo_resultados_E2 ; \
 	P=0 ; \
 	for i in 32 16 8 4 2 ; do \
 		P=$$(( (dim*dim)/i )) ; \
-		for j in `seq 1 3` ; do \
+		for j in `seq 1 5` ; do \
 			#echo P = $$P ; \
 			#echo Limpando pastas... ; \
 			rm -f matrizes_threads/*.txt ; \
