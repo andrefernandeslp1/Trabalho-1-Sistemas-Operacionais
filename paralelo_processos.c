@@ -12,7 +12,7 @@
 
 //comando: ./<programa> <matriz_1> <matriz_2> <valor_de_P>
 
-int linhaA, linhaB, colunaA, colunaB, linhaC, colunaC, cont, e, elementos, n, tempo, p;
+int linhaA, linhaB, colunaA, colunaB, linhaC, colunaC, cont, e, elementos, n, p;
 int N;
 double **matrizA, **matrizB;
 
@@ -142,7 +142,8 @@ int main (int argc, char *argv[])
     //}
     //wait(NULL);
 	}
-  wait(NULL);
+  for( int i=0 ; i < N; i++)
+    wait(NULL);
   /*
   for(int i=0 ; i < N ; i++)
   {

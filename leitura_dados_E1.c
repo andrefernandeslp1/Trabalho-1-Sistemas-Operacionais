@@ -11,15 +11,18 @@ int main(int argc, char *argv[])
   FILE *arq, *arq2, *arq3, *arq4;
 
   int N, t1, t2, t3, aux=0, aux2=0, tam1, tam2, p;
-  char tempo_p[5];
+  char * tempo_p;
   char tempo_t[5];
   char tempo_s[5];
   char str[50], str2[50];
   //str = malloc(sizeof(char));
   //str2 = malloc(sizeof(char));
   //tempo = malloc(sizeof(char));
+  tempo_p = malloc(sizeof(char));
 
   N = atoi(argv[1]);
+
+  char * end;
 
   for(int ii = 1; ii <=N ; ii++)
   {
@@ -29,18 +32,23 @@ int main(int argc, char *argv[])
     while(!feof(arq)){
       fgets(tempo_p,5,arq);
     }
+    printf("tempo_p = %s, ", tempo_p);
     t1 = atoi(tempo_p);
-    if(t1 > aux) aux = t1;
+    printf("t1 = %d\n",t1);
 
+    if(t1 > aux) aux = t1;
     fclose(arq);
 
     sprintf(str2,"matrizes_threads/matriz_C%d.txt", ii);
     arq2 = fopen(str2,"r");
     
     while(!feof(arq2)){
-      fgets(tempo_t,5,arq);
+      fgets(tempo_t,5,arq2);
     }
+    //printf("tempo_t = %s, ", tempo_t);
     t2 = atoi(tempo_t);
+    //printf("t2 = %d\n",t2);
+
     if(t2 > aux2) aux2 = t2;
 
     fclose(arq2);
@@ -79,6 +87,8 @@ int main(int argc, char *argv[])
   fprintf(arq4, "%d,%d,%d,%d\n", execucao, aux, aux2, t3);
   fclose(arq4);
 
+  tempo_p = NULL;
+  free(tempo_p);
   //tempo = NULL;
   //free(tempo);
   //free(str);

@@ -21,7 +21,7 @@ comp:
 
 exec: 
 	@echo Executando E1...
-	for num in 150 300 600 1200 2400 ; do \
+	for num in 800 ; do \
 			./auxiliar $$num $$num $$num $$num ; \
 		echo P = \[ n1xm2 / 8 \] ; \
 		for i in `seq 1 5` ; do \
