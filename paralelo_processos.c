@@ -131,7 +131,7 @@ int main (int argc, char *argv[])
 
     if(filho == 0)
     {
-      printf("Filho = %d\n", getpid());
+      //printf("Filho = %d\n", getpid());
       funcao(i);
       //exit(0);
     }

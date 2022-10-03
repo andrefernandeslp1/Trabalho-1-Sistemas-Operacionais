@@ -21,10 +21,10 @@ comp:
 
 exec: 
 	@echo Executando E1...
-	for num in 300 ; do \
+	for num in 150 300 600 1200 2400 ; do \
 			./auxiliar $$num $$num $$num $$num ; \
 		echo P = \[ n1xm2 / 8 \] ; \
-		for i in `seq 1 1` ; do \
+		for i in `seq 1 3` ; do \
 			num2=$$(( (num*num)/8 )) ; \
 			echo SEQUENCIAL $$num x $$num Execucao $$i ; \
 			./sequencial matriz_1.txt matriz_2.txt ; \
@@ -49,8 +49,8 @@ comp_e2:
 	@echo Compilando...
 	gcc auxiliar.c -o auxiliar
 	gcc sequencial.c -o sequencial
-	gcc paralelo_threads.c -o paralelo_threads -pthread
-	gcc paralelo_processos.c -o paralelo_processos
+	gcc paralelo_threads.c -o paralelo_threads -pthread -lm
+	gcc paralelo_processos.c -o paralelo_processos -lm
 	gcc cria_arquivo_resultados_E2.c -o cria_arquivo_resultados_E2
 	gcc leitura_dados_E2.c -o leitura_dados_E2
 
