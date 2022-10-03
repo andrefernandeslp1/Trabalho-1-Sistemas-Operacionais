@@ -6,23 +6,23 @@
 #include <pthread.h>
 #include <math.h>
 
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/shm.h>
+
 //comando: ./<programa> <matriz_1> <matriz_2> <valor_de_P>
 
 int linhaA, linhaB, colunaA, colunaB, linhaC, colunaC, cont, e, elementos, n, tempo, p;
 int N;
 double **matrizA, **matrizB;
 
-pthread_t *thread;
-int status;
-void * thread_return;
-
-void * funcao_thread(void *tid)
+int funcao(int n)
 {
+  
   int tempo = time(NULL);
   int cont=0;
   double aux;
   FILE *arq3;
-  int n = (int)(size_t)tid;
   char str_[50];
 
   int i, j;
@@ -39,8 +39,8 @@ void * funcao_thread(void *tid)
   for( i = inicio; i <= final; i++) {
     for( j = 0 ; j < colunaB; j++) {
 
-      if(cont == 0) {        
-        sprintf(str_, "matrizes_threads/matriz_C%d.txt", n+1);
+      if(cont == 0) {       
+        sprintf(str_, "matrizes_processos/matriz_C%d.txt\n", n+1);
         arq3 = fopen(str_, "w");
         fprintf(arq3, "%d %d\n", linhaA, colunaB);
       }
@@ -55,18 +55,18 @@ void * funcao_thread(void *tid)
         cont++;
       }
 
-      if(cont == p || e == elementos ) {
+      if(cont == p ) {
         tempo = time(NULL) - tempo;
         fprintf(arq3, "%d", tempo);
         fclose(arq3);         
-        pthread_exit(NULL);
+        return 0;
       }
     }
   }
   tempo = time(NULL) - tempo;
   fprintf(arq3, "%d", tempo);
   fclose(arq3);
-  pthread_exit(NULL);
+  return 0;
 }
 
 int main (int argc, char *argv[])
@@ -80,8 +80,6 @@ int main (int argc, char *argv[])
   fscanf(arq, "%d %d", &linhaA, &colunaA);
   fscanf(arq2, "%d %d", &linhaB, &colunaB);
 
-  e = 0;
-  elementos = (linhaA*colunaB);
   n = 0; 
 
   // aloca um vetor de LIN ponteiros para linhas
@@ -108,36 +106,39 @@ int main (int argc, char *argv[])
   N = (linhaA*colunaB) / p;
   if ((linhaA*colunaB) % p != 0)  
     N++;
-    
-  thread = malloc (N * sizeof(pthread_t));
+
+  pid_t filho;
 
   for( int i=0 ; i < N; i++) {
 
-    //printf ( " Processo principal criando thread #%d \n " , i ) ;
-    status = pthread_create (&thread[i], NULL ,funcao_thread, (void*)(size_t)i) ;
+    filho = fork();
 
-    if(status != 0)
+    if(filho == 0)
     {
-      printf("Erro na criacao da thread. Codigo de Erro:%d\n", status);
-      return 1;
+      printf("Filho = %d\n", getpid());
+      funcao(i);
+      exit(0);
     }
-	}
+    wait(NULL);
 
+    if(filho > 0){
+      printf("Pai = %d\n", getpid());
+    }
+    //wait(NULL);
+	}
+  /*
   for(int i=0 ; i < N ; i++)
   {
     //printf ( "Esperando Thread %d finalizar .... \n" , i ) ;
     pthread_join ( thread [i] , &thread_return ) ;
     //printf ( "Thread %d finalizada \n" , i ) ;
   }
+  */
 
   //printf ( "processo vai finalizar \n" ) ;
 
   fclose(arq);
   fclose(arq2);
-
-  //liberar memória
-  thread = NULL;
-  free(thread);
 
   // libera a memória das matrizes
   for (int i=0; i < linhaA; i++){

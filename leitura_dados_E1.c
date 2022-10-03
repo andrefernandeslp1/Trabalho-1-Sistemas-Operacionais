@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     arq = fopen(str,"r");
 
     while(!feof(arq)){
-      fgets(tempo_p,5,arq);
+      fgets(tempo_p,10,arq);
     }
     t1 = atoi(tempo_p);
     if(t1 > aux) aux = t1;
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     arq2 = fopen(str2,"r");
     
     while(!feof(arq2)){
-      fgets(tempo_t,5,arq);
+      fgets(tempo_t,10,arq);
     }
     t2 = atoi(tempo_t);
     if(t2 > aux2) aux2 = t2;
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
   arq3 = fopen("matriz_3.txt", "r");
   fscanf(arq3,"%d %d", &tam1, &tam2);
   while(!feof(arq3)){
-      fgets(tempo_s,5,arq);
+      fgets(tempo_s,10,arq);
     }
   t3 = atoi(tempo_s);
   fclose(arq3);
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
   char str3[50];
   sprintf(str3, "resultados_E1_%dx%d_p%d.txt", tam1, tam2, p);
-  arq4 = fopen(str3, "a");
+  //arq4 = fopen(str3, "a");
 
   if(execucao == 1){
     arq4 = fopen(str3, "w");
@@ -75,10 +75,11 @@ int main(int argc, char *argv[])
   }
   else 
     arq4 = fopen(str3, "a");
+
   fprintf(arq4, "%d,%d,%d,%d\n", execucao, aux, aux2, t3);
   fclose(arq4);
+
   //tempo = NULL;
-  
   //free(tempo);
   //free(str);
   //free(str2);

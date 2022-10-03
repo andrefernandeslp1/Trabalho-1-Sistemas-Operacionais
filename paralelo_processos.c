@@ -4,188 +4,170 @@
 #include <time.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <math.h>
 
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/shm.h>
 
-//comando: ./<programa> <matriz_1> <matriz_2> <numero inteiro>
+//comando: ./<programa> <matriz_1> <matriz_2> <valor_de_P>
 
-typedef struct{
-  int i, j, linhaA, linhaB, colunaA, colunaB, e, elementos, N, n, p;
-  int tempo, ii;
-  double **matrizA, **matrizB;
-  char *str;
-} Dados;
+int linhaA, linhaB, colunaA, colunaB, linhaC, colunaC, cont, e, elementos, n, tempo, p;
+int N;
+double **matrizA, **matrizB;
 
-Dados * dados;
-
-int funcao(Dados *dados)
+int funcao(int n)
 {
+  
+  int tempo = time(NULL);
   int cont=0;
   double aux;
   FILE *arq3;
+  char str_[50];
 
-  for( dados->i; dados->i < dados->linhaA; ) {
-    for( dados->j; dados->j < dados->colunaB; ) {
+  int i, j;
+	int inicio, final;
 
-      if(dados->e < dados->elementos){
+  double passo = (double)linhaA/N;
 
-        aux = 0;
+  //if(linhaA % N != 0)
+    //passo++;
+  printf("Passo = %lf\n", passo);
 
-        if(cont == 0) {        
-          sprintf(dados->str, "matrizes_processos/matriz_C%d.txt", dados->n);
-          //printf("dados->str = %s\n", dados->str);
-          arq3 = fopen(dados->str, "w");
-          fprintf(arq3, "%d %d\n", dados->linhaA, dados->colunaB);
-        }
-        
-        for(int k = 0; k < dados->linhaB; k++) 
-          aux += dados->matrizA[dados->i][k] * dados->matrizB[k][dados->j];
+  if( n % 2 != 0 )
+    j = p % colunaB;
+  else  
+    j = 0;
 
-        if(cont < dados->p ) {
-          fprintf(arq3, "c(%d,%d) %.3lf\n", dados->i+1, dados->j+1, aux);
-          dados->e++;
-          cont++;
-          if(dados->j < dados->colunaB - 1) {
-            dados->j++;
-          }
-          else {
-            dados->j = 0;
-            dados->i++;
-          } 
-        }
+  inicio = n * passo;
 
-        if(cont == dados->p || dados->e == dados->elementos ) {
-          fclose(arq3);
-          return 0;
-        }
+  final = ceil((n + 1) * passo) - 1;
+
+  if(final > linhaA)
+    final = linhaA - 1;
+
+  for( i = inicio; i <= final; i++) {
+    for( j ; j < colunaB; j++) {
+
+      if(cont == 0) {       
+        sprintf(str_, "matrizes_processos/matriz_C%d.txt\n", n+1);
+        arq3 = fopen(str_, "w");
+        fprintf(arq3, "%d %d\n", linhaA, colunaB);
+      }
+
+      aux = 0;
+
+      for(int k = 0; k < linhaB; k++) 
+        aux += matrizA[i][k] * matrizB[k][j];
+
+      if(cont < p ) {
+        fprintf(arq3, "c(%d,%d) %.3lf\n", i+1, j+1, aux);
+        cont++;
+      }
+
+      //if(cont == colunaB)
+      //  j = 0;
+
+      if(cont == p ) {
+        tempo = time(NULL) - tempo;
+        fprintf(arq3, "%d", tempo);
+        fclose(arq3);         
+        return 0;
       }
     }
+    j = 0;
   }
+  tempo = time(NULL) - tempo;
+  fprintf(arq3, "%d", tempo);
   fclose(arq3);
   return 0;
 }
 
 int main (int argc, char *argv[])
 {
-  int valor = shmget ( IPC_PRIVATE , sizeof ( Dados ) , IPC_CREAT | 0666 ) ;
-  Dados *dados = (Dados*) shmat (valor, NULL, 0);
-  
-  if(valor < 0){
-    printf("Erro na alocacao!\n");
-    return 1;
-  }
+  char temp[100];
 
-  int filho, linhaA, linhaB, colunaA, colunaB, linhaC, colunaC, cont, elementos, N, n=0, p;
-  char *temp;
-  temp = malloc(sizeof(char));
-
-  FILE *arq, *arq2, *arq4;
+  FILE *arq, *arq2;
   arq = fopen(argv[1], "r");
   arq2 = fopen(argv[2], "r");
   p = atoi(argv[3]);
   fscanf(arq, "%d %d", &linhaA, &colunaA);
-  fscanf(arq2, "%d %d", &linhaB, &colunaB);  
+  fscanf(arq2, "%d %d", &linhaB, &colunaB);
+
+  n = 0; 
 
   // aloca um vetor de LIN ponteiros para linhas
-  dados->matrizA = malloc (linhaA * sizeof (double*)) ;
-  dados->matrizB = malloc (linhaB * sizeof (double*)) ;
-
-  dados->str = malloc (sizeof(char));
+  matrizA = malloc (linhaA * sizeof (double*)) ;
+  matrizB = malloc (linhaB * sizeof (double*)) ;
 
   // aloca cada uma das linhas
   for (int i=0; i < linhaA; i++){
-    dados->matrizA[i] = malloc (colunaA * sizeof (double)) ;
+    matrizA[i] = malloc (colunaA * sizeof (double)) ;
   }
   for (int i=0; i < linhaB; i++){
-    dados->matrizB[i] = malloc (colunaB * sizeof (double)) ;
+    matrizB[i] = malloc (colunaB * sizeof (double)) ;
   }
 
   // percorre as matrizes
   for (int i=0; i < linhaA; i++)
     for (int j=0; j < colunaA; j++)
-      fscanf(arq, "%s %lf", temp, &dados->matrizA[i][j]);
+      fscanf(arq, "%s %lf", temp, &matrizA[i][j]);
   for (int i=0; i < linhaB; i++)
     for (int j=0; j < colunaB; j++)
-      fscanf(arq2, "%s %lf", temp, &dados->matrizB[i][j]);
+      fscanf(arq2, "%s %lf", temp, &matrizB[i][j]);
 
-  //struct recebe dados
-  dados->linhaA = linhaA;
-  dados->linhaB = linhaB;
-  dados->colunaA = colunaA;
-  dados->colunaB = colunaB;
-  dados->p = p;
-  dados->n = 0;
-  dados->i = 0;
-  dados->j = 0 ;  
-  dados->e = 0;
-  dados->elementos = (linhaA*colunaB);
-  //dados->ii = 0;
-
-  N = (linhaA*colunaB)/p;  
-  if( (linhaA*colunaB) % p != 0 ) 
+  //thread //multiplicação das matrizes
+  N = (linhaA*colunaB) / p;
+  if ((linhaA*colunaB) % p != 0)  
     N++;
 
-  dados->N = N;
+  pid_t filho;
 
-  for( int i=0 ; i < dados->N; i++) {
-    dados->tempo = time(NULL);
-    
+  for( int i=0 ; i < N; i++) {
+
     filho = fork();
 
     if(filho == 0)
     {
-      dados = shmat (valor, NULL, 0);
-      //printf("Filho %d pid %d: \n", i, getpid());
-      //printf("Filho %d pid_pai %d: \n", i, getppid());
-      funcao(dados);
-      
-      shmdt(dados);
+      printf("Filho = %d\n", getpid());
+      funcao(i);
       exit(0);
     }
-    dados->n++;
     wait(NULL);
 
-    dados->tempo = time(NULL) - dados->tempo;
-    //printf("time = %d\n", dados->tempo);
-    sprintf(dados->str, "matrizes_processos/matriz_C%d.txt", dados->n);
-    arq4 = fopen(dados->str, "a");
-    fprintf(arq4, "%d", dados->tempo);
-    fclose(arq4);
-
-    
+    if(filho > 0){
+      printf("Pai = %d\n", getpid());
+    }
+    //wait(NULL);
 	}
+  /*
+  for(int i=0 ; i < N ; i++)
+  {
+    //printf ( "Esperando Thread %d finalizar .... \n" , i ) ;
+    pthread_join ( thread [i] , &thread_return ) ;
+    //printf ( "Thread %d finalizada \n" , i ) ;
+  }
+  */
 
   //printf ( "processo vai finalizar \n" ) ;
-  
+
   fclose(arq);
   fclose(arq2);
-  //fclose(arq3);
-
-  //liberar memória
-  temp = NULL;
-  dados->str = NULL;
-  free(temp);
-  free(dados->str);
 
   // libera a memória das matrizes
   for (int i=0; i < linhaA; i++){
-    dados->matrizA[i] = NULL;
-    free (dados->matrizA[i]) ;
+    matrizA[i] = NULL;
+    free (matrizA[i]) ;
   }
-  dados->matrizA = NULL;
-  free (dados->matrizA) ;
+  matrizA = NULL;
+  free (matrizA) ;
 
   for (int i=0; i < linhaB; i++){
-    dados->matrizB[i] = NULL;
-    free (dados->matrizB[i]) ;
+    matrizB[i] = NULL;
+    free (matrizB[i]) ;
   }
-  dados->matrizB = NULL;
-  free (dados->matrizB) ;
-
-  shmctl( valor , IPC_RMID , NULL );
-  //exit(0);
+  matrizB = NULL;
+  free (matrizB) ;
 
   return 0;
 }
