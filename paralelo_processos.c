@@ -32,7 +32,7 @@ int funcao(int n)
 
   //if(linhaA % N != 0)
     //passo++;
-  printf("Passo = %lf\n", passo);
+  //printf("Passo = %lf\n", passo);
 
   if( n % 2 != 0 )
     j = p % colunaB;
@@ -137,11 +137,12 @@ int main (int argc, char *argv[])
     }
     //wait(NULL);
 
-    if(filho > 0){
-      printf("Pai = %d\n", getpid());
-    }
+    //if(filho > 0){
+    //  printf("Pai = %d\n", getpid());
+    //}
     //wait(NULL);
 	}
+  wait(NULL);
   /*
   for(int i=0 ; i < N ; i++)
   {

@@ -24,7 +24,7 @@ void * funcao_thread(void *tid)
   FILE *arq3;
   int n = (int)(size_t)tid;
   char str_[50];
-
+  /*
   int i, j;
 	int inicio, final;
 
@@ -35,9 +35,31 @@ void * funcao_thread(void *tid)
   final = (n + 1) * passo - 1;
   if(final > linhaA)
     final = linhaA - 1;
+  */
+
+  int i, j;
+	int inicio, final;
+
+  double passo = (double)linhaA/N;
+
+  //if(linhaA % N != 0)
+    //passo++;
+  //printf("Passo = %lf\n", passo);
+
+  if( n % 2 != 0 )
+    j = p % colunaB;
+  else  
+    j = 0;
+
+  inicio = n * passo;
+
+  final = ceil((n + 1) * passo) - 1;
+
+  if(final > linhaA)
+    final = linhaA - 1;
 
   for( i = inicio; i <= final; i++) {
-    for( j = 0 ; j < colunaB; j++) {
+    for( j ; j < colunaB; j++) {
 
       if(cont == 0) {        
         sprintf(str_, "matrizes_threads/matriz_C%d.txt", n+1);
@@ -55,13 +77,14 @@ void * funcao_thread(void *tid)
         cont++;
       }
 
-      if(cont == p || e == elementos ) {
+      if(cont == p ) {
         tempo = time(NULL) - tempo;
         fprintf(arq3, "%d", tempo);
         fclose(arq3);         
         pthread_exit(NULL);
       }
     }
+    j = 0;
   }
   tempo = time(NULL) - tempo;
   fprintf(arq3, "%d", tempo);
@@ -80,8 +103,6 @@ int main (int argc, char *argv[])
   fscanf(arq, "%d %d", &linhaA, &colunaA);
   fscanf(arq2, "%d %d", &linhaB, &colunaB);
 
-  e = 0;
-  elementos = (linhaA*colunaB);
   n = 0; 
 
   // aloca um vetor de LIN ponteiros para linhas

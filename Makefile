@@ -15,7 +15,7 @@ comp:
 	@echo Compilando...
 	gcc auxiliar.c -o auxiliar
 	gcc sequencial.c -o sequencial
-	gcc paralelo_threads.c -o paralelo_threads -pthread
+	gcc paralelo_threads.c -o paralelo_threads -pthread -lm
 	gcc paralelo_processos.c -o paralelo_processos -lm
 	gcc leitura_dados_E1.c -o leitura_dados_E1
 
