@@ -11,14 +11,14 @@ int main(int argc, char *argv[])
   FILE *arq, *arq2, *arq3, *arq4;
 
   int N, t1, t2, t3, aux=0, aux2=0, tam1, tam2, p;
-  char * tempo_p;
+  char tempo_p[5];
   char tempo_t[5];
   char tempo_s[5];
   char str[50], str2[50];
   //str = malloc(sizeof(char));
   //str2 = malloc(sizeof(char));
   //tempo = malloc(sizeof(char));
-  tempo_p = malloc(sizeof(char));
+  //tempo_p = malloc(sizeof(char));
 
   N = atoi(argv[1]);
 
@@ -32,9 +32,7 @@ int main(int argc, char *argv[])
     while(!feof(arq)){
       fgets(tempo_p,5,arq);
     }
-    printf("tempo_p = %s, ", tempo_p);
     t1 = atoi(tempo_p);
-    printf("t1 = %d\n",t1);
 
     if(t1 > aux) aux = t1;
     fclose(arq);
@@ -86,9 +84,12 @@ int main(int argc, char *argv[])
 
   fprintf(arq4, "%d,%d,%d,%d\n", execucao, aux, aux2, t3);
   fclose(arq4);
+  printf("tempo_sequencial = %d\n", t3);
+  printf("tempo_threads = %d\n", aux2);
+  printf("tempo_processos = %d\n", aux);
 
-  tempo_p = NULL;
-  free(tempo_p);
+  //tempo_p = NULL;
+  //free(tempo_p);
   //tempo = NULL;
   //free(tempo);
   //free(str);

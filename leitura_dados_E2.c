@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     arq2 = fopen(str2,"r");
     
     while(!feof(arq2)){
-      fgets(tempo_t,5,arq);
+      fgets(tempo_t,5,arq2);
     }
     t2 = atoi(tempo_t);
     if(t2 > aux2) aux2 = t2;
@@ -77,6 +77,10 @@ int main(int argc, char *argv[])
 
   fprintf(arq4, "%d = [n1xm2/%d],%d,%d\n", p, denominador, aux, aux2);
   fclose(arq4);
+
+  printf("tempo_threads = %d\n", aux2);
+  printf("tempo_processos = %d\n", aux);
+
   //tempo = NULL;
   
   //free(tempo);
