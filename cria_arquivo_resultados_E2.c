@@ -4,7 +4,7 @@
 #include <time.h>
 #include <unistd.h>
 
-// ./cria_arquivo_resultados <valor de P>
+// ./cria_arquivo_resultados_E2
 
 int main()
 {
@@ -12,11 +12,17 @@ int main()
 
   int N, t1, t2, t3, aux=0, aux2=0, tam1, tam2, p;
 
-  arq3 = fopen("matriz_3.txt", "r");
+  arq = fopen("matriz_1.txt", "r");
 
-  fscanf(arq3,"%d %d", &tam1, &tam2);
+  fscanf(arq,"%d %d", &tam1, &aux);
   
-  fclose(arq3);
+  fclose(arq);
+
+  arq2 = fopen("matriz_2.txt", "r");
+
+  fscanf(arq2,"%d %d", &aux2, &tam2);
+  
+  fclose(arq2);
 
   arq4 = fopen("resultados_E2.txt", "w");
   fprintf(arq4, "Matriz: %d x %d\n", tam1, tam2);

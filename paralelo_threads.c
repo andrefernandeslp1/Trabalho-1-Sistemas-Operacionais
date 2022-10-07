@@ -24,27 +24,12 @@ void * funcao_thread(void *tid)
   FILE *arq3;
   int n = (int)(size_t)tid;
   char str_[50];
-  /*
-  int i, j;
-	int inicio, final;
-
-  int passo = linhaA/N;
-  if(linhaA % N != 0)
-    passo++;
-  inicio = n * passo;
-  final = (n + 1) * passo - 1;
-  if(final > linhaA)
-    final = linhaA - 1;
-  */
 
   int i, j;
 	int inicio, final;
 
+  //lógica que fornece o trecho da matriz a ser multiplicado
   double passo = (double)linhaA/N;
-
-  //if(linhaA % N != 0)
-    //passo++;
-  //printf("Passo = %lf\n", passo);
 
   if( n % 2 != 0 )
     j = p % colunaB;
@@ -58,6 +43,7 @@ void * funcao_thread(void *tid)
   if(final > linhaA)
     final = linhaA - 1;
 
+  //multiplicação e impressão no arquivo
   for( i = inicio; i <= final; i++) {
     for( j ; j < colunaB; j++) {
 
@@ -105,7 +91,7 @@ int main (int argc, char *argv[])
 
   n = 0; 
 
-  // aloca um vetor de LIN ponteiros para linhas
+  // aloca um vetor de ponteiros para linhas
   matrizA = malloc (linhaA * sizeof (double*)) ;
   matrizB = malloc (linhaB * sizeof (double*)) ;
 
@@ -125,13 +111,14 @@ int main (int argc, char *argv[])
     for (int j=0; j < colunaB; j++)
       fscanf(arq2, "%s %lf", temp, &matrizB[i][j]);
 
-  //thread //multiplicação das matrizes
+  // qtd. de threads a serem chamadas
   N = (linhaA*colunaB) / p;
   if ((linhaA*colunaB) % p != 0)  
     N++;
     
   thread = malloc (N * sizeof(pthread_t));
 
+  //chamada das threads
   for( int i=0 ; i < N; i++) {
 
     //printf ( " Processo principal criando thread #%d \n " , i ) ;

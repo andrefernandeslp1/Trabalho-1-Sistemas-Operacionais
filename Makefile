@@ -23,7 +23,7 @@ exec:
 	for num in 150 300 600 1200 2400 ; do \
 		./auxiliar $$num $$num $$num $$num ; \
 		echo ; \
-		for i in `seq 1 5` ; do \
+		for i in `seq 1 10` ; do \
 			num2=$$(( (num*num)/8 )) ; \
 			echo $$num x $$num - Execucao $$i ; \
 			echo P = \[ n1xm2 / 8 \] ; \
@@ -75,7 +75,7 @@ exec_e2:
 	for i in 32 16 8 4 2 ; do \
 		echo ; \
 		P=$$(( (dim*dim)/i )) ; \
-		for j in `seq 1 5` ; do \
+		for j in `seq 1 10` ; do \
 			echo P = \[ n1xm2 / $$i \] ; \
 			echo $$dim x $$dim - Execucao $$j ; \
 			echo Limpando pastas... ; \

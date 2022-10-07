@@ -16,6 +16,7 @@ int linhaA, linhaB, colunaA, colunaB, linhaC, colunaC, cont, e, elementos, n, p;
 int N;
 double **matrizA, **matrizB;
 
+//função p/ multiplicação das matrizes
 int funcao(int n)
 {
   
@@ -28,11 +29,8 @@ int funcao(int n)
   int i, j;
 	int inicio, final;
 
+  //lógica que fornece o trecho a matriz a ser multiplicado
   double passo = (double)linhaA/N;
-
-  //if(linhaA % N != 0)
-    //passo++;
-  //printf("Passo = %lf\n", passo);
 
   if( n % 2 != 0 )
     j = p % colunaB;
@@ -46,6 +44,7 @@ int funcao(int n)
   if(final > linhaA)
     final = linhaA - 1;
 
+  // multiplicação e impressão no arquivo
   for( i = inicio; i <= final; i++) {
     for( j ; j < colunaB; j++) {
 
@@ -98,7 +97,7 @@ int main (int argc, char *argv[])
 
   n = 0; 
 
-  // aloca um vetor de LIN ponteiros para linhas
+  // aloca um vetor de ponteiros para linhas
   matrizA = malloc (linhaA * sizeof (double*)) ;
   matrizB = malloc (linhaB * sizeof (double*)) ;
 
@@ -118,13 +117,14 @@ int main (int argc, char *argv[])
     for (int j=0; j < colunaB; j++)
       fscanf(arq2, "%s %lf", temp, &matrizB[i][j]);
 
-  //thread //multiplicação das matrizes
+  // qtd. de processos a serem criados
   N = (linhaA*colunaB) / p;
   if ((linhaA*colunaB) % p != 0)  
     N++;
 
   pid_t filho;
 
+  //criação dos processos
   for( int i=0 ; i < N; i++) {
 
     filho = fork();
@@ -135,25 +135,11 @@ int main (int argc, char *argv[])
       funcao(i);
       //exit(0);
     }
-    //wait(NULL);
 
-    //if(filho > 0){
-    //  printf("Pai = %d\n", getpid());
-    //}
-    //wait(NULL);
 	}
+  // encerra os processos
   for( int i=0 ; i < N; i++)
     wait(NULL);
-  /*
-  for(int i=0 ; i < N ; i++)
-  {
-    //printf ( "Esperando Thread %d finalizar .... \n" , i ) ;
-    pthread_join ( thread [i] , &thread_return ) ;
-    //printf ( "Thread %d finalizada \n" , i ) ;
-  }
-  */
-
-  //printf ( "processo vai finalizar \n" ) ;
 
   fclose(arq);
   fclose(arq2);
