@@ -5,8 +5,8 @@ Sistemas Operacionais - T03
 Professor: Gustavo Girão
 
 Aluno: André Augusto Fernandes
-#
-## Instruções:
+
+### Instruções:
 Para executar os códigos de forma automática, basta digitar:
 
 "`make e1`" para a implementação E1.
