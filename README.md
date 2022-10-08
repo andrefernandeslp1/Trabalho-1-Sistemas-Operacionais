@@ -18,7 +18,7 @@ ou
 
 ### Acesse o:
 
-Relatório [aqui](relatório.pdf)
+Relatório [aqui](Relatório.pdf)
 
 Vídeo https://www.youtube.com/watch?v=u2mNQbDSpKs
 
