@@ -7,6 +7,7 @@ Professor: Gustavo Girão
 Aluno: André Augusto Fernandes
 
 ### Instruções:
+
 Para executar os códigos de forma automática, basta digitar:
 
 "`make e1`" para a implementação E1.
@@ -14,7 +15,7 @@ Para executar os códigos de forma automática, basta digitar:
 ou
 
 "`make e2`" para a implementação E2.
-#
+
 ### Acesse o:
 
 Relatório [aqui](relatório.pdf)
